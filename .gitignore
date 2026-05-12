@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Environment files — NEVER commit real credentials
+.env
+.env.local
+.env.dev
+.env.staging
+.env.production
+
+# Playwright output
+test-results/
+playwright-report/
+allure-results/
+allure-report/
+
+# Auth state storage
+.auth/
+
+# TypeScript build output
+dist/
+
+# macOS
+.DS_Store
+
+# Editor
+.idea/
+
+# Logs
+*.log
+npm-debug.log*

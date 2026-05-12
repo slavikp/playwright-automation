@@ -1,0 +1,9 @@
+{
+  "playwright.reuseBrowser": false,
+  "playwright.showTrace": false,
+  "playwright.showBrowser": true,
+  "playwright.testCommand": "npx playwright test --project=chromium",
+  "playwright.env": {
+    "ENV": "local"
+  }
+}
