@@ -8,7 +8,7 @@ export abstract class BasePage {
   }
 
   async navigate(path: string): Promise<void> {
-    await this.page.goto(path);
+    await this.page.goto(path, { waitUntil: 'domcontentloaded' });
   }
 
   async waitForLoadingToFinish(): Promise<void> {

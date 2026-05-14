@@ -30,7 +30,9 @@ export class LoginPage extends BasePage {
   async goto(): Promise<void> {
     await this.navigate(ROUTES.HOME);
     await this.waitForLoadingToFinish();
-    await this.page.getByRole('button', { name: 'Sign In' }).click();
+    const signInBtn = this.page.getByRole('button', { name: /sign in/i });
+    await signInBtn.waitFor({ state: 'visible', timeout: 30_000 });
+    await signInBtn.click();
     // Login opens as a full-screen overlay — URL doesn't change, wait for the form
     await this.page.getByRole('textbox', { name: 'Email' }).waitFor({ state: 'visible', timeout: 15_000 });
   }

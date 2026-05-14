@@ -46,16 +46,18 @@ export default defineConfig({
   },
 
   projects: [
-    // ── Auth setup (only needed when TEST_USER credentials are set) ──────────
+    // ── Auth setup — opens a headed browser for manual login, then saves session ─
     {
       name: 'setup',
       testMatch: '**/global.setup.ts',
+      use: { headless: false },
     },
 
-    // ── Chromium — always runs (local + CI) ───────────────────────────────────
+    // ── Chromium — always runs; setup provides .auth/user.json for authenticated tests ─
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      dependencies: ['setup'],
     },
 
     // ── Additional browsers — CI only ─────────────────────────────────────────
@@ -63,31 +65,24 @@ export default defineConfig({
       {
         name: 'firefox',
         use: { ...devices['Desktop Firefox'] },
+        dependencies: ['setup'],
       },
       {
         name: 'webkit',
         use: { ...devices['Desktop Safari'] },
+        dependencies: ['setup'],
       },
       {
         name: 'mobile-chrome',
         use: { ...devices['Pixel 7'] },
+        dependencies: ['setup'],
       },
       {
         name: 'mobile-safari',
         use: { ...devices['iPhone 14'] },
+        dependencies: ['setup'],
       },
     ] : []),
-
-    // ── Authenticated tests (requires .auth/user.json from setup) ─────────────
-    {
-      name: 'authenticated',
-      testMatch: '**/authenticated/**/*.spec.ts',
-      use: {
-        ...devices['Desktop Chrome'],
-        storageState: '.auth/user.json',
-      },
-      dependencies: ['setup'],
-    },
 
     // ── API-only project (no browser) ─────────────────────────────────────────
     {

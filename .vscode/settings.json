@@ -1,8 +1,7 @@
 {
-  "playwright.reuseBrowser": false,
-  "playwright.showTrace": false,
+  "playwright.reuseBrowser": true,
   "playwright.showBrowser": true,
-  "playwright.testCommand": "npx playwright test --project=chromium",
+  "playwright.showTrace": false,
   "playwright.env": {
     "ENV": "local"
   }

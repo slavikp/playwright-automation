@@ -19,6 +19,7 @@
     "dotenv": "^16.4.5"
   },
   "devDependencies": {
+    "@playwright/mcp": "^0.0.75",
     "@playwright/test": "^1.49.1",
     "@types/node": "^22.10.2",
     "typescript": "^5.7.2"

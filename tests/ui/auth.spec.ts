@@ -1,4 +1,7 @@
 import { test, expect } from '../../fixtures';
+import * as path from 'path';
+
+const AUTH_FILE = path.join(__dirname, '../../.auth/user.json');
 
 test.describe('Authentication', () => {
   test.describe('Login', () => {
@@ -29,6 +32,52 @@ test.describe('Authentication', () => {
     test('should show validation errors for empty submission', async ({ page }) => {
       await page.getByRole('button', { name: /register|sign up|submit/i }).click();
       await expect(page.getByRole('alert').or(page.locator('[class*="error"]').first())).toBeVisible();
+    });
+  });
+
+  test.describe('Authenticated session', () => {
+    test.use({ storageState: AUTH_FILE });
+
+    test('homepage should not show Sign In button when logged in', async ({ page, homePage }) => {
+      await homePage.goto();
+      await expect(page.getByRole('button', { name: /sign in/i })).toBeHidden({ timeout: 10_000 });
+    });
+
+    test('authenticated pages should be accessible without redirect to login', async ({ page }) => {
+      await page.goto('/enter-ticket');
+      await page.waitForLoadState('domcontentloaded');
+      await expect(page).not.toHaveURL(/login|sign-in/i);
+    });
+
+    test('PlayOn Loyalty section should be accessible without redirect to login', async ({ page }) => {
+      await page.goto('/playon');
+      await page.waitForLoadState('domcontentloaded');
+      await expect(page).not.toHaveURL(/login|sign-in/i);
+    });
+
+    test('should be able to log out and return to guest state', async ({ page }) => {
+      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      // Wait for React to hydrate the authenticated state (Sign In disappears)
+      await expect(page.getByRole('button', { name: /sign in/i })).toBeHidden({ timeout: 20_000 });
+
+      // In auth mode the header has: [nav btns x4] [account btn] [shopping cart]
+      // Account button is always second-to-last in the header button list
+      const headerBtns = page.locator('header').getByRole('button');
+      const btnCount = await headerBtns.count();
+      const accountBtn = headerBtns.nth(btnCount - 2);
+      await accountBtn.click();
+
+      const logoutBtn = page
+        .getByRole('button', { name: /log out|sign out|logout/i })
+        .or(page.getByRole('link', { name: /log out|sign out|logout/i }))
+        .first();
+
+      await logoutBtn.waitFor({ state: 'visible', timeout: 15_000 });
+      await logoutBtn.click();
+
+      await expect(
+        page.getByRole('button', { name: /sign in/i }),
+      ).toBeVisible({ timeout: 15_000 });
     });
   });
 });

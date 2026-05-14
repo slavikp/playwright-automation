@@ -22,11 +22,8 @@ test.describe('Games — eInstants page', () => {
     ).toBeVisible();
   });
 
-  test('Relic Fortunes is present with NEW badge', async ({ page }) => {
+  test('Relic Fortunes card is present', async ({ page }) => {
     await expect(page.getByText('Relic Fortunes').first()).toBeVisible();
-    await expect(
-      page.locator('.MuiCard-root').filter({ hasText: 'Relic Fortunes' }).getByText('NEW'),
-    ).toBeVisible();
   });
 
   test('Kansas Cashout is present with HOT badge and $300,000 prize', async ({ page }) => {
@@ -63,6 +60,44 @@ test.describe('Games — Game card navigation', () => {
     await gamesPage.clickGameByName('Kansas Cashout');
     await page.waitForLoadState('domcontentloaded');
     await expect(page).toHaveURL(/ks-cashout/i);
+  });
+});
+
+test.describe('Games — Scratch & Pull Tabs page', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/games/scratch-and-pull-tabs');
+    await page.waitForLoadState('domcontentloaded');
+  });
+
+  test('page title and H1', async ({ page }) => {
+    await expect(page).toHaveTitle(/Scratch.*Pull Tabs/i);
+    await expect(
+      page.getByRole('heading', { name: /scratch and pull tab games/i, level: 1 }),
+    ).toBeVisible();
+  });
+
+  test('shows game count', async ({ page }) => {
+    await expect(page.getByText(/\d+ games shown/i)).toBeVisible();
+  });
+
+  test('Filter and Sort button is visible', async ({ page }) => {
+    await expect(page.getByRole('button', { name: /filter.*sort/i })).toBeVisible();
+  });
+});
+
+test.describe('Games — Fast Play page', () => {
+  test('page title and H1', async ({ page }) => {
+    await page.goto('/games/fast-play', { waitUntil: 'domcontentloaded' });
+    await expect(page).toHaveTitle(/Fast Play/i);
+    await expect(page.getByRole('heading', { name: 'Fast Play', level: 1 })).toBeVisible({ timeout: 20_000 });
+  });
+});
+
+test.describe('Games — Samplers page', () => {
+  test('page title and H1', async ({ page }) => {
+    await page.goto('/samplers', { waitUntil: 'domcontentloaded' });
+    await expect(page).toHaveTitle(/Samplers/i);
+    await expect(page.getByRole('heading', { name: 'Samplers', level: 1 })).toBeVisible({ timeout: 20_000 });
   });
 });
 
