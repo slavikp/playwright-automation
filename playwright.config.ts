@@ -7,6 +7,8 @@ const env = process.env.ENV || 'local';
 dotenv.config({ path: path.resolve(__dirname, `.env.${env}`) });
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
+const runTimestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+
 export default defineConfig({
   testDir: './tests',
 
@@ -30,12 +32,12 @@ export default defineConfig({
   },
 
   reporter: [
-    ['html', { outputFolder: 'playwright-report', open: 'never' }],
+    ['html', { outputFolder: `playwright-report/${runTimestamp}`, open: 'never' }],
     ['list'],
     ...(process.env.CI ? [['github'] as ['github']] : []),
     // QMetry Cloud: uploads JUnit XML after every run when QMETRY_API_KEY is set.
     // Set QMETRY_PROJECT_KEY and QMETRY_CYCLE_NAME to target a specific cycle.
-    ['./reporters/qmetry.ts'],
+    ['./reporters/qmetry.ts', { outputFile: `test-results/qmetry-junit-${runTimestamp}.xml` }],
   ],
 
   use: {
