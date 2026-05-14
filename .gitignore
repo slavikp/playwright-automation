@@ -26,6 +26,9 @@ dist/
 # Editor
 .idea/
 
+# MCP session data
+.playwright-mcp/
+
 # Logs
 *.log
 npm-debug.log*
