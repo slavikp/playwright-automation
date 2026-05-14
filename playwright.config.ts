@@ -33,6 +33,9 @@ export default defineConfig({
     ['html', { outputFolder: 'playwright-report', open: 'never' }],
     ['list'],
     ...(process.env.CI ? [['github'] as ['github']] : []),
+    // QMetry Cloud: uploads JUnit XML after every run when QMETRY_API_KEY is set.
+    // Set QMETRY_PROJECT_KEY and QMETRY_CYCLE_NAME to target a specific cycle.
+    ['./reporters/qmetry.ts'],
   ],
 
   use: {
