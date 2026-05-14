@@ -56,28 +56,18 @@ test.describe('Authentication', () => {
     });
 
     test('should be able to log out and return to guest state', async ({ page }) => {
+      // Account button (data-test-id="pc-account-info-button") navigates to the
+      // account section where the Sign Out button lives in the sidebar menu.
       await page.goto('/', { waitUntil: 'domcontentloaded' });
-      // Wait for React to hydrate the authenticated state (Sign In disappears)
       await expect(page.getByRole('button', { name: /sign in/i })).toBeHidden({ timeout: 20_000 });
 
-      // In auth mode the header has: [nav btns x4] [account btn] [shopping cart]
-      // Account button is always second-to-last in the header button list
-      const headerBtns = page.locator('header').getByRole('button');
-      const btnCount = await headerBtns.count();
-      const accountBtn = headerBtns.nth(btnCount - 2);
-      await accountBtn.click();
-
-      const logoutBtn = page
-        .getByRole('button', { name: /log out|sign out|logout/i })
-        .or(page.getByRole('link', { name: /log out|sign out|logout/i }))
-        .first();
-
-      await logoutBtn.waitFor({ state: 'visible', timeout: 15_000 });
-      await logoutBtn.click();
+      await page.locator('[data-test-id="pc-account-info-button"]').click();
+      await page.getByRole('button', { name: /sign out/i }).waitFor({ state: 'visible', timeout: 15_000 });
+      await page.getByRole('button', { name: /sign out/i }).click();
 
       await expect(
         page.getByRole('button', { name: /sign in/i }),
-      ).toBeVisible({ timeout: 15_000 });
+      ).toBeVisible({ timeout: 20_000 });
     });
   });
 });

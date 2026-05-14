@@ -4,7 +4,9 @@ import * as path from 'path';
 import { ENV_CONFIG } from '../config/environments';
 
 const AUTH_FILE = path.join(__dirname, '../.auth/user.json');
-const MAX_AGE_MS = 23 * 60 * 60 * 1000; // re-auth after 23 hours
+// Dev environment: Keycloak sessions expire ~15 min; re-auth before that.
+// UAT (no reCAPTCHA): auto-login is instant so a short cache is fine.
+const MAX_AGE_MS = 12 * 60 * 1000; // re-auth after 12 minutes
 
 setup('authenticate', async ({ page }) => {
   fs.mkdirSync(path.dirname(AUTH_FILE), { recursive: true });
